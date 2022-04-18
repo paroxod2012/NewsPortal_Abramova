@@ -1,0 +1,39 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>News list</title>
+</head>
+<body>
+<h1>News list</h1>
+   {% if news %}
+       <table>
+           <tr>
+               <td>Header</td>
+               <td>Post</td>
+               <td>Author</td>
+               <td>Category</td>
+           </tr>
+
+           {% for n in news %}
+           <tr>
+
+               <td>{{ n.title }}</td>
+               <td>{{ n.text }}</td>
+               <td>{{ n.author.authorUser}}</td>
+               <td>{% for i in n.news.all %} {{i}} {% endfor %}</td>
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>The newsfeed is empty for today!</h2>
+   {% endif %}
+</body>
+</html>
+
+
+
