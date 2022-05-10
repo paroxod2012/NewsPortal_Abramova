@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title> Weekly news: {{ category_name  }} </title>
+</head>
+<body>
+    <h1> Greetings, {{ user }}, new paper in your favorite category {{ category_name  }} for the las week ({{ week_number_last }}) ! </h1>
+<hr>
+{% for news in text %}
+{{ news }}
+{% endfor%}
+<br>
+</body>
+</html>

@@ -1,0 +1,30 @@
+{% extends 'flatpages/default.html' %}
+
+{% block title %} Category list {% endblock title %}
+
+{% block content %}
+<p>&nbsp;</p>
+Click to <span style="text-decoration: underline;">subscribe</span> to stay up to date <strong>{{user.username}}</strong>!
+<p>&nbsp;</p>
+
+<table style="height: 125px; " width="176">
+    <thead>
+        <th>
+            Categories
+        </th>
+    </thead>
+    {% for cat in category %}
+    <tr>
+       <td>
+            {{ cat.name }}
+           <a href="{% url 'category:subscribe' cat.id %}"><u>Subscribe!</u></a>
+
+
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock content %}
+
