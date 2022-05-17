@@ -114,6 +114,19 @@ class UserUpdateView(LoginRequiredMixin, UpdateView):
     def get_object(self, **kwargs):
         return self.request.user
 
+from django.http import HttpResponse
+from django.views import View
+from .tasks import weekly_send_for_subscribers
+# notify_new_post hello, printer
+
+class IndexView(View):
+    def get(self, request):
+        # notify_new_post.delay()
+        weekly_send_for_subscribers.delay()
+        return HttpResponse('Hello!')
+
+
+
 
 
 

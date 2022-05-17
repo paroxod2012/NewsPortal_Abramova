@@ -175,3 +175,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 APSCHEDULER_RUN_NOW_TIMEOUT = 25
 
+CELERY_BROKER_URL = 'redis://:3tGwQpkuaHvfM2GPogZYEeZsNs9IJLvy@redis-16303.c299.asia-northeast1-1.gce.cloud.redislabs.com:16303/0'
+CELERY_RESULT_BACKEND = 'redis://:3tGwQpkuaHvfM2GPogZYEeZsNs9IJLvy@redis-16303.c299.asia-northeast1-1.gce.cloud.redislabs.com:16303/0'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
