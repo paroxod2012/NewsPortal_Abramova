@@ -12,6 +12,15 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
+import logging
+
+logger_django = logging.getLogger('django')
+logger_request = logging.getLogger('django.request')
+logger_server = logging.getLogger('django.server')
+logger_template = logging.getLogger('django.template')
+logger_back = logging.getLogger('django.db_backends')
+
+
 class CategoryList(ListView):
 
     model = Category
@@ -31,6 +40,13 @@ def add_subscribe(request, pk):
     return redirect('/news/')
 
 class PostList(ListView):
+    logger_django.info('INFO')
+    logger_django.warning('WARNING')
+    logger_request.error('ERROR')
+    logger_server.error('ERROR')
+    logger_template.error('ERROR')
+    logger_back.error('ERROR')
+
     model = Post
     ordering = 'title'
     template_name = 'news.html'
@@ -58,6 +74,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'news_create.html'
     permission_required = ('newsapp.add_post')
+    success_url = '/news/'
 
     def form_valid(self, form):
         posttype = form.save(commit=False)
@@ -69,6 +86,7 @@ class NewsEdit(PermissionRequiredMixin, UpdateView):
     model = Post
     template_name = 'news_edit.html'
     permission_required = ('newsapp.change_post')
+    success_url = '/news/'
 
     def get_object(self, **kwargs):
         id = self.kwargs.get('pk')
@@ -84,6 +102,7 @@ class ArticleCreate(PermissionRequiredMixin, CreateView):
     model = Post
     template_name = 'article_create.html'
     permission_required = ('newsapp.add_post')
+    success_url = '/news/'
 
     def form_valid(self, form):
         posttype = form.save(commit=False)
@@ -94,7 +113,7 @@ class ArticleEdit(PermissionRequiredMixin, UpdateView):
     form_class = NewsForm
     model = Post
     template_name = 'article_edit.html'
-    success_url = reverse_lazy('news_list')
+    success_url = '/news/'
     permission_required = ('newsapp.change_post')
 
     def get_object(self, **kwargs):
@@ -104,25 +123,27 @@ class ArticleEdit(PermissionRequiredMixin, UpdateView):
 class ArticleDelete(DeleteView):
     model = Post
     template_name = 'article_delete.html'
-    success_url = reverse_lazy('news_list')
+    success_url = '/news/'
 
 class UserUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'user_update.html'
     form_class = UserForm
-    success_url = reverse_lazy('news_list')
+    success_url = '/news/'
 
     def get_object(self, **kwargs):
         return self.request.user
 
 from django.http import HttpResponse
 from django.views import View
-from .tasks import weekly_send_for_subscribers
-# notify_new_post hello, printer
+from .tasks import weekly_send_for_subscribers, notify_new_post
+from django.db.models.signals import post_save
+#hello, printer
 
 class IndexView(View):
     def get(self, request):
-        # notify_new_post.delay()
-        weekly_send_for_subscribers.delay()
+        post_save.connect(notify_new_post, sender=Post)
+        notify_new_post.delay()
+#        weekly_send_for_subscribers.delay()
         return HttpResponse('Hello!')
 
 
